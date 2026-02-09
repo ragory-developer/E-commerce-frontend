@@ -137,7 +137,7 @@ const Header = () => {
           <div className='col-span-6'>
             <div className='flex items-center w-full max-w-2xl mx-auto'>
               <div className='relative flex-1'>
-                <div className='flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200'>
+                <div className='flex items-center border border-gray-300 rounded-lg overflow-hidden  transition-shadow duration-200'>
 
 
                   {/* Search Input */}
