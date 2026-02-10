@@ -1,20 +1,18 @@
 'use client'
 
 import React from 'react';
-import NavbarTop from './sections/NavbarTop';
+import HeaderTop from "./sections/HeaderTop";
 import MiddleBar from './sections/MiddleBar';
 
 const Header = () => {
 
   return (
     <>
-      <NavbarTop />
+      <HeaderTop />
       {/* navbar search/ middle  */}
       <MiddleBar />
       {/* categorybar  */}
-
     </>
-
   );
 };
 
