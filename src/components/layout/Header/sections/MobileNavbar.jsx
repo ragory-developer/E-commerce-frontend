@@ -24,7 +24,7 @@ const TabletNavbar = ({ onMenuClick }) => (
       </div>
     </div>
 
-    <div className="w-[60%] mx-auto">
+    <div className="w-[70%] mx-auto">
       <div className="relative">
         <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden">
           <div className="flex-1 relative">

@@ -8,7 +8,7 @@ const DesktopNavbar = () => {
       <div className="col-span-2">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">F</span>
             </div>
             <div>
@@ -22,7 +22,7 @@ const DesktopNavbar = () => {
 
       {/* Middle Column: Search Bar */}
       <div className="col-span-8">
-        <div className="flex items-center w-full max-w-4xl mx-auto">
+        <div className="flex items-center w-full max-w-7xl mx-auto">
           <div className="relative flex-1">
             <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden transition-shadow duration-200 hover:shadow-sm">
               {/* Search Input */}
@@ -31,12 +31,12 @@ const DesktopNavbar = () => {
                 <input
                   type="text"
                   placeholder="Search for products..."
-                  className="w-full py-3 pl-10 pr-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0"
+                  className="w-full py-4 pl-10 pr-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0"
                 />
               </div>
 
               {/* Search Button */}
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 hover:opacity-90 transition-opacity duration-200 font-medium">
+              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 hover:opacity-90 transition-opacity duration-200 font-medium">
                 Search
               </button>
             </div>
