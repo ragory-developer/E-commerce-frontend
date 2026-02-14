@@ -4,12 +4,16 @@ import Header from './../../components/layout/Header/Header';
 import Footer from "@/components/layout/Footer/Footer";
 import NewsletterSection from "@/components/layout/NewsLetter/NewsLetterSection";
 import HeroSection from "@/components/layout/HeroSection/HeroSection";
+import FeaturesSection from "@/components/layout/FeaturesSection/FeaturesSection";
+import BrandsSection from "@/components/layout/BrandsSection/BrandsSection";
 
 const HomePage = () => {
   return (
     <div className="bg-white">
       <Header />
       <HeroSection />
+      <FeaturesSection />
+      <BrandsSection />
       <NewsletterSection />
       <Footer />
     </div>

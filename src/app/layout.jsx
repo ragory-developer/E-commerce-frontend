@@ -3,7 +3,10 @@
 // app/layout.js
 import '../styles/globals.css'
 import { Poppins } from 'next/font/google'
-
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 // Import Poppins globally
 const poppins = Poppins({
   subsets: ['latin'],

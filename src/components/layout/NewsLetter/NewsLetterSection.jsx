@@ -24,8 +24,8 @@ const OptimizedNewsletterSection = () => {
   };
 
   return (
-    <section className="bg-blue-600 py-4 flex items-center justify-center">
-      <div className="w-full md:max-w-[90%] lg:max-w-[70%] px-4 mx-auto">
+    <section className="bg-blue-600 py-4 flex items-center justify-center ">
+      <div className="w-full md:max-w-[90%] lg:max-w-[70%] px-4 xl:px-16 xl:max-w-500 mx-auto">
         <div className="py-4 text-white">
           {/* Grid Layout - Responsive with flex-col on mobile */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-12">

@@ -8,8 +8,8 @@ const NavbarTop = () => {
   return (
     <>
       {/* navbar top  */}
-      <div className="border-b border-gray-200 hidden lg:block">
-        <div className="max-w-[90vw] h-10 flex items-center justify-between text-sm mx-auto">
+      <div className="border-b border-gray-200 hidden lg:block ">
+        <div className="max-w-[90vw] xl:px-16 xl:max-w-500 h-10 flex items-center justify-between text-sm mx-auto">
           {/* Left: Welcome message */}
           <div className="font-medium text-gray-900">
             Welcome to FleetCart store

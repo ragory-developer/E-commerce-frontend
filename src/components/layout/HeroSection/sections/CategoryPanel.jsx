@@ -166,6 +166,8 @@ const categoryData = [
   },
 ];
 
+// dynamic mega menu on scroll
+
 // Mega Menu Component
 const MegaMenu = ({
   category,
@@ -180,7 +182,7 @@ const MegaMenu = ({
 
   return createPortal(
     <div
-      className="fixed bg-white  border border-gray-200 overflow-hidden transition-all duration-200"
+      className="absolute bg-white  border border-gray-200 overflow-hidden transition-all duration-200"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
@@ -194,7 +196,7 @@ const MegaMenu = ({
       onMouseLeave={onMouseLeave}>
       {/* Background Image Overlay */}
       <div
-        className="absolute inset-0 opacity-5 pointer-events-none"
+        className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
           backgroundImage: `url(${category.megaMenu.backgroundImage})`,
           backgroundSize: "cover",

@@ -22,6 +22,13 @@ import {
   HelpCircle,
   Shield,
   FileText,
+  Facebook,
+  X,
+  Instagram,
+  Youtube,
+  MessageCircleMorex,
+  MessageCircle,
+  Twitter,
 } from "lucide-react";
 
 const Footer = () => {
@@ -92,18 +99,25 @@ const Footer = () => {
       "Lifestyle",
       "Smartphone",
     ],
+    socialLinks: [
+      { icon: Facebook, url: "https://facebook.com/..." },
+      { icon: MessageCircle, url: "https://wa.me/..." },
+      { icon: Twitter, url: "https://twitter.com/..." },
+      { icon: Instagram, url: "https://instagram.com/..." },
+      { icon: Youtube, url: "https://youtube.com/..." },
+    ],
   };
 
   return (
     <footer className="w-full bg-white text-gray-800 py-8 border-t border-gray-200 md:py-12">
-      <div className="max-w-[90vw] mx-auto px-4">
+      <div className="max-w-[90vw] xl:max-w-500 xl:px-16 mx-auto px-4">
         {/* Main Footer Grid - 5 columns on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-8">
           {/* Column 1: Newsletter + Contact Us */}
           <div className="lg:col-span-3 space-y-8">
             {/* Contact Us Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900">Contact Us</h3>
+              <h3 className="text-xl font-medium text-gray-900">Contact Us</h3>
               <div className="space-y-6">
                 {footerData.contact.items.map((item, index) => {
                   const Icon = item.icon;
@@ -115,12 +129,31 @@ const Footer = () => {
                   );
                 })}
               </div>
+
+              {/* Social Links – added here, centered */}
+              <div className="w-full flex justify-start items-center gap-6 pt-4">
+                {footerData.socialLinks?.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-600 hover:text-blue-600 transition-colors">
+                      <Icon size={24} />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Column 2: My Account */}
           <div className="lg:col-span-2 ">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">My Account</h3>
+            <h3 className="text-xl font-medium text-gray-900 mb-4">
+              My Account
+            </h3>
             <ul className="space-y-6">
               {footerData.myAccount.links.map((link, index) => (
                 <li key={index}>
@@ -140,7 +173,7 @@ const Footer = () => {
 
           {/* Column 3: Our Services */}
           <div className="lg:col-span-2 ">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+            <h3 className="text-xl font-medium text-gray-900 mb-4">
               Our Services
             </h3>
             <ul className="space-y-6">
@@ -162,7 +195,7 @@ const Footer = () => {
 
           {/* Column 4: Information */}
           <div className="lg:col-span-2 ">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+            <h3 className="text-xl font-medium text-gray-900 mb-4">
               Information
             </h3>
             <ul className="space-y-6">
@@ -184,7 +217,7 @@ const Footer = () => {
 
           {/* Column 5: Tags */}
           <div className="lg:col-span-3 ">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Tags</h3>
+            <h3 className="text-xl font-medium text-gray-900 mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {footerData.tags.map((tag, index) => (
                 <a

@@ -15,7 +15,7 @@ function MiddleBar() {
   };
 
   return (
-    <div className="max-w-[90vw] h-28 py-5 mx-auto">
+    <div className="max-w-[90vw] xl:max-w-500 h-28 py-5 mx-auto xl:px-16 sticky">
       {/* Mobile Category Panel */}
       <MobileCategoryPanel
         isOpen={isCategoryPanelOpen}
