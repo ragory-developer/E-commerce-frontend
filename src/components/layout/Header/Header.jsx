@@ -1,18 +1,17 @@
-'use client'
+"use client";
 
-import React from 'react';
+import React from "react";
 import HeaderTop from "./sections/HeaderTop";
-import MiddleBar from './sections/MiddleBar';
+import MiddleBar from "./sections/MiddleBar";
 
 const Header = () => {
-
   return (
-    <>
+    <header>
       <HeaderTop />
-      {/* navbar search/ middle  */}
-      <MiddleBar />
-      {/* categorybar  */}
-    </>
+      <div className="sticky top-0 z-100 bg-white border-b border-gray-200">
+        <MiddleBar />
+      </div>
+    </header>
   );
 };
 

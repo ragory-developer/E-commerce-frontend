@@ -205,7 +205,7 @@ const MegaMenu = ({
       />
 
       {/* Mega Menu Header */}
-      <div className="relative z-10 px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+      <div className="relative  px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
         <div className="flex items-center gap-3">
           {Icon && <Icon className="w-5 h-5 text-blue-600" />}
           <h3 className="text-base font-bold text-gray-500">
@@ -344,7 +344,7 @@ const CategoryPanel = () => {
                 <a
                   href={category.href || "#"}
                   className={`
-                    flex items-center justify-between px-4 py-4
+                    flex items-center justify-between px-4 py-2.5
                     text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700
                     transition-all duration-200 group relative
                     ${
