@@ -1,13 +1,3 @@
-/**
- * MIDDLE BAR - FIXED VERSION
- * ==========================
- *
- * Changes Made:
- * 1. Using Container component
- * 2. Removed sticky (parent Header is sticky)
- * 3. Removed fixed height, using py-5
- * 4. Proper responsive padding
- */
 
 import React, { useState } from "react";
 import DesktopNavbar from "./DesktopNavbar";

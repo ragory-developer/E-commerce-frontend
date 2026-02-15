@@ -1,13 +1,3 @@
-/**
- * NEWSLETTER SECTION - FIXED VERSION
- * ==================================
- *
- * Changes Made:
- * 1. Using Container (consistent padding)
- * 2. Fixed alignment with other sections
- * 3. Proper responsive behavior
- */
-
 "use client";
 import React, { useState } from "react";
 import { Mail, Loader2 } from "lucide-react";

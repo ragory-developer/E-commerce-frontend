@@ -322,21 +322,14 @@ const CategoryPanel = () => {
 
   return (
     <>
-      <div className="relative bg-white rounded-lg  border border-gray-200 h-full overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="px-4 py-3.5 ">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-700 flex items-center gap-2">
-            <span className="w-1 h-5 bg-white rounded-full"></span>
-            All Categories
-          </h2>
-        </div>
-
+      <div className="relative py-4 bg-white rounded-lg  border border-gray-200 h-full overflow-hidden flex flex-col">
         {/* Category List */}
         <nav className="flex-1 overflow-y-auto">
           {categoryData.map((category, index) => {
             const Icon = iconMap[category.id];
             return (
               <div
+                className=""
                 key={category.id}
                 ref={(el) => (categoryRefs.current[category.id] = el)}
                 onMouseEnter={() => handleCategoryHover(category)}
@@ -384,14 +377,14 @@ const CategoryPanel = () => {
         </nav>
 
         {/* Footer */}
-        <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+        {/* <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
           <a
             href="/categories"
             className="text-xs font-semibold text-gray-600 hover:text-blue-600 flex items-center gap-1.5 transition-colors group">
             <span>Browse all categories</span>
             <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </a>
-        </div>
+        </div> */}
       </div>
 
       {/* Mega Menu Portal */}
