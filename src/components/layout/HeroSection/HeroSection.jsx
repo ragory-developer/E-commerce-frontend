@@ -5,7 +5,7 @@ import BannerSection from "./sections/BannerSection";
 
 const HeroSection = () => {
   return (
-    <section className="xl:max-w-500 px-4 md:max-w-[90%] mx-auto py-4 xl:px-16">
+    <section className=" px-4 md:max-w-[90%] mx-auto py-4 xl:px-16">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 md:gap-4 lg:gap-6">
         {/* Category Panel - Hidden on mobile, shows from lg */}
         <div className="hidden lg:block lg:col-span-3 xl:col-span-2">

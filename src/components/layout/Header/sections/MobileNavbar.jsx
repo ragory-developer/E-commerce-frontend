@@ -4,47 +4,7 @@ import React, { useState } from "react";
 import { Search, Globe, Menu, X } from "lucide-react";
 
 // Helper components defined outside the main component
-const TabletNavbar = ({ onMenuClick }) => (
-  <div className="hidden md:flex lg:hidden items-center justify-between h-16">
-    <div className="flex items-center space-x-3">
-      <button
-        className="p-2 hover:bg-gray-100 rounded-md"
-        onClick={onMenuClick}>
-        <Menu className="w-6 h-6 text-gray-700" />
-      </button>
-      <div className="flex items-center space-x-2">
-        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-lg">F</span>
-        </div>
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
-            Fleet<span className="text-blue-600">Cart</span>
-          </h1>
-        </div>
-      </div>
-    </div>
 
-    <div className="w-[70%] mx-auto">
-      <div className="relative">
-        <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="w-full py-3 pl-10 pr-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0"
-            />
-          </div>
-          <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 hover:opacity-90 transition-opacity duration-200 font-medium">
-            Search
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div className="w-10"></div>
-  </div>
-);
 
 const MobileNavbarInactive = ({
   onMenuClick,
@@ -121,17 +81,6 @@ const MobileNavbarActive = ({
   handleLanguageSelect,
 }) => (
   <div className="md:hidden flex items-center justify-between h-16 space-x-3">
-    <div className="flex items-center space-x-3 flex-shrink-0">
-      <button
-        className="p-2 hover:bg-gray-100 rounded-md"
-        onClick={onMenuClick}>
-        <Menu className="w-6 h-6 text-gray-700" />
-      </button>
-      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-        <span className="text-white font-bold text-lg">F</span>
-      </div>
-    </div>
-
     <div className="flex-grow">
       <div className="relative">
         <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden">
@@ -143,6 +92,13 @@ const MobileNavbarActive = ({
               className="w-full py-3 pl-10 pr-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0"
               autoFocus
             />
+            <div className="absolute">
+              {/* prompt for ai:act as expert frontend dev make professtionaly add button to search button inside input field to
+        click search when click outside of the search bar it closes to inactive mode don't need a toggle button */}
+              <button>
+                <Search />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -156,12 +112,6 @@ const MobileNavbarActive = ({
       </button>
 
       <div className="relative">
-        <button
-          onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-          className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
-          <Globe className="w-6 h-6 text-gray-700" />
-        </button>
-
         {isLanguageOpen && (
           <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
             <div className="py-2">
@@ -211,7 +161,7 @@ const MobileNavbar = ({ onMenuClick }) => {
 
   return (
     <>
-      <TabletNavbar onMenuClick={onMenuClick} />
+    
 
       {isSearchActive ? (
         <MobileNavbarActive
