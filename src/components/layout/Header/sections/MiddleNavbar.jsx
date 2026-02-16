@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
-import MobileCategoryPanel from "./MobileCategoryPanel";
+import MobileSidePanel from "./MobileSidePanel";
 import Container from "@/design-system/Container/Container";
-function MiddleBar() {
+function MiddleNavbar() {
   const [isCategoryPanelOpen, setIsCategoryPanelOpen] = useState(false);
 
   const handleMenuClick = () => {
@@ -17,7 +17,7 @@ function MiddleBar() {
 
   return (
     <Container className="py-5">
-      <MobileCategoryPanel
+      <MobileSidePanel
         isOpen={isCategoryPanelOpen}
         onClose={handleClosePanel}
       />
@@ -28,4 +28,4 @@ function MiddleBar() {
   );
 }
 
-export default MiddleBar;
+export default MiddleNavbar;

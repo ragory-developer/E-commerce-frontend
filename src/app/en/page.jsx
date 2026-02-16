@@ -6,6 +6,9 @@ import NewsletterSection from "@/components/layout/NewsLetter/NewsLetterSection"
 import HeroSection from "@/components/layout/HeroSection/HeroSection";
 import FeaturesSection from "@/components/layout/FeaturesSection/FeaturesSection";
 import BrandsSection from "@/components/layout/BrandsSection/BrandsSection";
+import ProcessTab from '@/components/checkout/CheckoutTab';
+
+
 
 const HomePage = () => {
   return (
@@ -13,6 +16,7 @@ const HomePage = () => {
       <Header />
       <HeroSection />
       <FeaturesSection />
+      <ProcessTab />
       <BrandsSection />
       <NewsletterSection />
       <Footer />

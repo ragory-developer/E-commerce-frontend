@@ -39,3 +39,48 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+
+
+
+// square banner//
+
+// const HeroSection = () => {
+//   return (
+//     <section className="py-4 md:py-6">
+//       <Container>
+//         <HeroTabs />
+
+//         {/* Grid container with fluid height and responsive column definitions */}
+// <div
+//   className="grid gap-4 grid-cols-1 lg:grid-cols-[minmax(180px,240px)_1fr] xl:grid-cols-[minmax(180px,240px)_1fr_minmax(200px,280px)] h-[clamp(320px,50vw,500px)]"
+// >
+//   {/* Category Panel - hidden on mobile, visible at lg+ */}
+//   <aside className="hidden lg:block overflow-hidden">
+//     <div className="h-full">
+//       <CategoryPanel />
+//     </div>
+//   </aside>
+
+//   {/* Hero Carousel - always visible */}
+//   <main className="overflow-hidden min-w-0">
+//     <div className="h-full">
+//       <HeroCarousel />
+//     </div>
+//   </main>
+
+//   {/* Banner Section - hidden until xl */}
+//   <aside className="hidden xl:block overflow-hidden">
+//     <div className="h-full">
+//       <BannerSection />
+//     </div>
+//   </aside>
+// </div>
+//       </Container >
+//     </section >
+//   );
+// };
+
+
+
+

@@ -26,7 +26,7 @@ const NewsletterSection = () => {
 
   return (
     <section className="bg-blue-600 py-8">
-      <Container>
+      <Container >
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-12 text-white">
           <div className="w-full md:w-1/2 text-center md:text-left space-y-2 md:space-y-3">
             <h2 className="text-xl md:text-xl lg:text-2xl font-semibold">
