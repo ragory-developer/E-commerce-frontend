@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
-  Package,
-  Phone,
-  CreditCard,
-  Truck,
   CheckCircle,
-  Lock,
   Tag,
   Edit,
   ChevronDown,
-  PhoneCall,
   SquarePen,
-  BoxIcon,
   ShoppingBagIcon,
   Van,
   ShieldCheck,
@@ -99,12 +92,14 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
   const [error, setError] = useState("");
   const inputRefs = useRef([]);
 
+  // Auto-focus first OTP input when entering OTP step
   useEffect(() => {
     if (step === "otp") {
       setTimeout(() => inputRefs.current[0]?.focus(), 100);
     }
   }, [step]);
 
+  // Auto-verify when all 4 digits are entered
   useEffect(() => {
     if (step === "otp" && otp.every((d) => d !== "")) {
       handleVerifyOtp();
@@ -113,10 +108,16 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
   }, [otp]);
 
   const handleSendOtp = () => {
-    if (!phoneNumber.trim() || phoneNumber.trim().length < 8) {
-      setError("Please enter a valid phone number.");
+    const digitsOnly = phoneNumber.replace(/\D/g, "");
+    const bdRegex = /^01[3-9]\d{8}$/;
+
+    if (!bdRegex.test(digitsOnly)) {
+      setError(
+        "Please enter a valid Bangladeshi phone number (e.g., 01XXXXXXXXX)",
+      );
       return;
     }
+
     setError("");
     setLoading(true);
     setTimeout(() => {
@@ -125,32 +126,41 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
     }, 800);
   };
 
-  const handleVerifyOtp = () => {
-    const entered = otp.join("");
-    if (entered === "1234") {
-      setStep("verified");
-      onVerified(phoneNumber);
-    } else {
-      setError("Invalid OTP. Try 1234.");
-      setOtp(["", "", "", ""]);
-      inputRefs.current[0]?.focus();
-    }
-  };
-
   const handleOtpChange = (index, value) => {
     if (!/^\d?$/.test(value)) return;
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
+
     if (error) setError("");
   };
 
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    }
+
+    // Submit on Enter if all fields are filled
+    if (e.key === "Enter" && otp.every((d) => d !== "")) {
+      handleVerifyOtp();
+    }
+  };
+
+  const handleVerifyOtp = () => {
+    const enteredOtp = otp.join("");
+    // Demo: accept "1234" – replace with real verification
+    if (enteredOtp === "1234") {
+      setStep("verified");
+      onVerified(phoneNumber);
+    } else {
+      setError("Invalid OTP. Please try again.");
+      setOtp(["", "", "", ""]);
+      inputRefs.current[0]?.focus();
     }
   };
 
@@ -170,7 +180,7 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
           <button
             onClick={() => setStep("input")}
             className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
-            <Edit className="w-3 h-3" /> <span>Change Number</span>
+            <Edit className="w-3 h-3" /> Change Number
           </button>
         </div>
       </div>
@@ -184,15 +194,13 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
       {step === "input" && (
         <div>
           <div className="grid grid-cols-3 gap-3">
-            {" "}
-            {/* fixed gap */}
             <div className="col-span-2">
               <Input
                 label="Phone Number"
                 required
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+1 (555) 000-0000"
+                placeholder="01XXXXXXXXX"
                 error={error}
                 disabled={loading}
                 className="h-10 sm:h-auto"
@@ -221,13 +229,13 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
       )}
 
       {step === "otp" && (
-        <div className="flex flex-col items-center sm:items-start">
-          <p className="text-sm text-gray-600 mb-3 text-center sm:text-left">
+        <div className="flex flex-col items-center px-4 py-2">
+          <p className="text-sm text-gray-600 mb-4 text-center">
             Enter the 4‑digit code sent to{" "}
             <span className="font-medium">{phoneNumber}</span>
           </p>
-          {/* OTP inputs: centered on mobile, left-aligned on desktop */}
-          <div className="flex gap-2 justify-center sm:justify-start">
+
+          <div className="flex gap-3 justify-center mb-4">
             {otp.map((digit, idx) => (
               <input
                 key={idx}
@@ -237,24 +245,24 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
                 value={digit}
                 onChange={(e) => handleOtpChange(idx, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-bold border-0 border-b-2 border-gray-300 focus:border-blue-500 focus:ring-0 outline-none transition bg-transparent"
+                className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl sm:text-2xl font-bold border-0 border-b-2 border-gray-300 focus:border-blue-500 focus:ring-0 outline-none transition bg-transparent"
               />
             ))}
           </div>
+
           {error && (
-            <p className="text-sm text-red-600 mt-3 text-center sm:text-left">
-              {error}
-            </p>
+            <p className="text-sm text-red-600 mb-4 text-center">{error}</p>
           )}
-          <div className="flex justify-between items-center w-full mt-6 gap-3">
+
+          <div className="flex justify-center gap-4 w-full">
             <button
               onClick={() => setStep("input")}
-              className="text-base text-blue-600 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-200">
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-blue-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-blue-200">
               <SquarePen size={18} /> Change number
             </button>
             <button
               onClick={() => setOtp(["", "", "", ""])}
-              className="text-sm text-gray-500 px-4 py-2 hover:text-gray-700 hover:underline transition">
+              className="px-5 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline transition">
               Clear
             </button>
           </div>
@@ -263,7 +271,6 @@ const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
     </div>
   );
 };
-
 // ─── Billing Details (step 2) – using react‑hook‑form with validation ────────
 const BillingDetails = ({ register, errors }) => {
   const countries = [
@@ -354,7 +361,7 @@ const BillingDetails = ({ register, errors }) => {
   );
 };
 
-// ─── Payment Methods (step 3) – clean flat design ────────────────────────────
+// ─── Payment Methods  ────────────────────────────
 const PaymentMethods = ({ selected, onChange }) => {
   const methods = [
     {
@@ -405,7 +412,7 @@ const PaymentMethods = ({ selected, onChange }) => {
   );
 };
 
-// ─── Delivery Options (step 4) – clean flat design ───────────────────────────
+// ─── Delivery Options  ───────────────────────────
 const DeliveryOptions = ({ selected, onChange }) => {
   const options = [
     {
@@ -465,7 +472,7 @@ const DeliveryOptions = ({ selected, onChange }) => {
   );
 };
 
-// ─── Order Summary (sticky sidebar) – improved styles ────────────────────────
+// ─── Order Summary  ────────────────────────
 const OrderSummary = ({
   product,
   subtotal,
@@ -653,11 +660,13 @@ const Checkout = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left column – forms */}
           <div className="flex-1 min-w-0">
-            <PhoneVerification
-              onVerified={handlePhoneVerified}
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-            />
+            {!phoneVerified && ( // Hide phone verification after successful verification
+              <PhoneVerification
+                onVerified={handlePhoneVerified}
+                phoneNumber={phoneNumber}
+                setPhoneNumber={setPhoneNumber}
+              />
+            )}
             <BillingDetails register={register} errors={errors} />
             <PaymentMethods
               selected={paymentMethod}
@@ -684,6 +693,6 @@ const Checkout = () => {
       </form>
     </div>
   );
-};
+}
 
 export default Checkout;

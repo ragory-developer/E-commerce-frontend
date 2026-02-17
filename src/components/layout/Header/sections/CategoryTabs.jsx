@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Menu } from "lucide-react"; // Hamburger icon
-import { Container } from "@/design-system/Container/Container";
+
 
 const CategoryTabs = () => {
   return (
