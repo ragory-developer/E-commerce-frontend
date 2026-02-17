@@ -3,13 +3,12 @@ import CategoryPanel from "./sections/CategoryPanel";
 import HeroCarousel from "./sections/HeroCarousel";
 import BannerSection from "./sections/BannerSection";
 import Container from "@/design-system/Container/Container";
-import HeroTabs from "./sections/HeroTabs";
+
 
 const HeroSection = () => {
   return (
-    <section className="py-4 md:py-6">
+    <section className=" md:py-4">
       <Container>
-        <HeroTabs />
         {/* Mobile: Stack vertically */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Category Panel - Hidden on mobile, fixed 240px on desktop */}

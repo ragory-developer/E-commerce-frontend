@@ -1,284 +1,688 @@
-import React, { useState } from 'react';
-import { Package, X, Tag, ShoppingCartIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Package,
+  Phone,
+  CreditCard,
+  Truck,
+  CheckCircle,
+  Lock,
+  Tag,
+  Edit,
+  ChevronDown,
+  PhoneCall,
+  SquarePen,
+  BoxIcon,
+  ShoppingBagIcon,
+  Van,
+  ShieldCheck,
+} from "lucide-react";
 
-// --- Dummy product data (for demonstration) ---
-const dummyProducts = [
-  {
-    id: 1,
-    image: 'https://asia.fleetcart.envaysoft.com/storage/media/0NyoRNyW1I5EqQXqbYAVCqsEyyTVKzkVTC4koInF.jpg',
-    name: 'Samsung Galaxy S24 Ultra 5G AI Smartphone',
-    variant: 'Color: Titanium Yellow, Size: 128GB',
-    unitPrice: 799.0,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    image: 'https://asia.fleetcart.envaysoft.com/storage/media/0NyoRNyW1I5EqQXqbYAVCqsEyyTVKzkVTC4koInF.jpg',
-    name: 'Apple 2023 MacBook Pro (14-inch)',
-    variant: 'Color: Space Black, Storage: 512GB',
-    unitPrice: 1999.0,
-    quantity: 1,
-  },
-  {
-    id: 3,
-    image: 'https://asia.fleetcart.envaysoft.com/storage/media/0NyoRNyW1I5EqQXqbYAVCqsEyyTVKzkVTC4koInF.jpg',
-    name: 'Apple AirPods Pro',
-    variant: '',
-    unitPrice: 299.0,
-    quantity: 1,
-  },
-];
+// ─── Helper: format price ─────────────────────────────────────────────────────
+const formatPrice = (num) => `$${num.toFixed(2)}`;
 
-// --- Horizontal Product Card (used inside OrderSummary) ---
-const OrderProductCard = ({ product, updateQuantity, removeProduct }) => {
-  const lineTotal = product.unitPrice * product.quantity;
-
-  return (
-    <div className="flex items-start gap-4 py-4 border-b border-gray-100 last:border-0">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-16 h-16 object-cover border border-gray-200 rounded"
+// ─── Reusable Input with error (reduced height) ──────────────────────────────
+const Input = ({
+  label,
+  error,
+  required,
+  className = "",
+  icon: Icon,
+  ...props
+}) => (
+  <div className="mb-4">
+    {label && (
+      <label className="block text-xs font-medium text-gray-700 mb-1.5">
+        {label} {required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+    )}
+    <div className="relative">
+      {Icon && (
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      )}
+      <input
+        className={`w-full border ${error ? "border-red-300 bg-red-50" : "border-gray-200"} 
+          rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition 
+          ${Icon ? "pl-10" : ""} ${className}`}
+        {...props}
       />
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-gray-900 text-sm">{product.name}</div>
-        {product.variant && (
-          <div className="text-xs text-gray-500 mt-1">{product.variant}</div>
-        )}
-        <div className="flex items-center gap-2 mt-2">
+    </div>
+    {error && <p className="text-xs text-red-600 mt-1.5">{error}</p>}
+  </div>
+);
+
+const Select = ({
+  label,
+  error,
+  required,
+  options,
+  className = "",
+  ...props
+}) => (
+  <div className="mb-4">
+    {label && (
+      <label className="block text-xs font-medium text-gray-700 mb-1.5">
+        {label} {required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+    )}
+    <div className="relative">
+      <select
+        className={`w-full border ${error ? "border-red-300 bg-red-50" : "border-gray-200"} 
+          rounded-lg px-4 py-2 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${className}`}
+        {...props}>
+        <option value="">Select…</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+    </div>
+    {error && <p className="text-xs text-red-600 mt-1.5">{error}</p>}
+  </div>
+);
+
+// ─── Section Header with 1/5 blue bottom border ────────────────────────────
+const SectionHeader = ({ title }) => (
+  <div className="relative border-b-2 border-gray-100 mb-6 pb-3">
+    <h3 className="text-lg font-medium text-gray-700">{title}</h3>
+    <div className="absolute bottom-0 left-0 w-1/5 h-0.5 bg-blue-600"></div>
+  </div>
+);
+
+// ─── Phone Verification (step 1) ─────────────────────────────────────────────
+const PhoneVerification = ({ onVerified, phoneNumber, setPhoneNumber }) => {
+  const [step, setStep] = useState("input"); // 'input' | 'otp' | 'verified'
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const inputRefs = useRef([]);
+
+  useEffect(() => {
+    if (step === "otp") {
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (step === "otp" && otp.every((d) => d !== "")) {
+      handleVerifyOtp();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp]);
+
+  const handleSendOtp = () => {
+    if (!phoneNumber.trim() || phoneNumber.trim().length < 8) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep("otp");
+    }, 800);
+  };
+
+  const handleVerifyOtp = () => {
+    const entered = otp.join("");
+    if (entered === "1234") {
+      setStep("verified");
+      onVerified(phoneNumber);
+    } else {
+      setError("Invalid OTP. Try 1234.");
+      setOtp(["", "", "", ""]);
+      inputRefs.current[0]?.focus();
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
+    if (error) setError("");
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  if (step === "verified") {
+    return (
+      <div className="bg-white border border-gray-100 rounded-lg p-6 mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-700">Phone Verified</h3>
+              <p className="text-sm text-gray-500">{phoneNumber}</p>
+            </div>
+          </div>
           <button
-            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition text-gray-600"
-            onClick={() => updateQuantity(product.id, product.quantity - 1)}
-          >
-            −
-          </button>
-          <span className="w-8 text-center font-medium text-gray-900">{product.quantity}</span>
-          <button
-            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition text-gray-600"
-            onClick={() => updateQuantity(product.id, product.quantity + 1)}
-          >
-            +
+            onClick={() => setStep("input")}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+            <Edit className="w-3 h-3" /> <span>Change Number</span>
           </button>
         </div>
       </div>
-      <div className="text-right">
-        <div className="font-semibold text-gray-900">${lineTotal.toFixed(2)}</div>
-        <button
-          className="text-gray-400 hover:text-red-600 transition-colors mt-2"
-          onClick={() => removeProduct(product.id)}
-        >
-          <X className="w-4 h-4" />
-        </button>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-lg p-6 mb-6">
+      <SectionHeader title="Phone Verification" />
+
+      {step === "input" && (
+        <div>
+          <div className="grid grid-cols-3 gap-3">
+            {" "}
+            {/* fixed gap */}
+            <div className="col-span-2">
+              <Input
+                label="Phone Number"
+                required
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+1 (555) 000-0000"
+                error={error}
+                disabled={loading}
+                className="h-10 sm:h-auto"
+              />
+            </div>
+            <div className="col-span-1">
+              <label className="block text-xs font-medium text-gray-700 mb-1.5 invisible sm:block">
+                &nbsp;
+              </label>
+              <button
+                onClick={handleSendOtp}
+                disabled={loading}
+                className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition disabled:opacity-50 text-sm h-10 sm:h-auto">
+                {loading ? (
+                  "…"
+                ) : (
+                  <span className="flex items-center lg:mx-6 justify-center gap-2">
+                    <ShieldCheck className="hidden sm:block" />
+                    Verify
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === "otp" && (
+        <div className="flex flex-col items-center sm:items-start">
+          <p className="text-sm text-gray-600 mb-3 text-center sm:text-left">
+            Enter the 4‑digit code sent to{" "}
+            <span className="font-medium">{phoneNumber}</span>
+          </p>
+          {/* OTP inputs: centered on mobile, left-aligned on desktop */}
+          <div className="flex gap-2 justify-center sm:justify-start">
+            {otp.map((digit, idx) => (
+              <input
+                key={idx}
+                ref={(el) => (inputRefs.current[idx] = el)}
+                type="text"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleOtpChange(idx, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-bold border-0 border-b-2 border-gray-300 focus:border-blue-500 focus:ring-0 outline-none transition bg-transparent"
+              />
+            ))}
+          </div>
+          {error && (
+            <p className="text-sm text-red-600 mt-3 text-center sm:text-left">
+              {error}
+            </p>
+          )}
+          <div className="flex justify-between items-center w-full mt-6 gap-3">
+            <button
+              onClick={() => setStep("input")}
+              className="text-base text-blue-600 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-200">
+              <SquarePen size={18} /> Change number
+            </button>
+            <button
+              onClick={() => setOtp(["", "", "", ""])}
+              className="text-sm text-gray-500 px-4 py-2 hover:text-gray-700 hover:underline transition">
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Billing Details (step 2) – using react‑hook‑form with validation ────────
+const BillingDetails = ({ register, errors }) => {
+  const countries = [
+    "United States",
+    "Bangladesh",
+    "United Kingdom",
+    "India",
+    "Australia",
+  ];
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-lg p-6 mb-6">
+      <SectionHeader title="Billing Details" />
+
+      <div className="grid grid-cols-1 gap-4">
+        <Input
+          label="Full Name"
+          required
+          error={errors.firstName?.message}
+          {...register("firstName", { required: "Full name is required" })}
+        />
+      </div>
+
+      <Input
+        label="Email Address"
+        type="email"
+        error={errors.email?.message}
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Invalid email address",
+          },
+        })}
+      />
+
+      <Input
+        label="Street Address"
+        required
+        error={errors.address?.message}
+        {...register("address", { required: "Street address is required" })}
+      />
+
+      <Input
+        label="Level / Apartment"
+        required
+        error={errors.level?.message}
+        {...register("level", { required: "Level / Apartment is required" })}
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          label="City"
+          required
+          error={errors.city?.message}
+          {...register("city", { required: "City is required" })}
+        />
+        <Input
+          label="State / Province"
+          required
+          error={errors.state?.message}
+          {...register("state", { required: "State is required" })}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          label="ZIP / Postal Code"
+          required
+          error={errors.zip?.message}
+          {...register("zip", { required: "ZIP code is required" })}
+        />
+        <Select
+          label="Country"
+          required
+          error={errors.country?.message}
+          options={countries}
+          {...register("country", { required: "Country is required" })}
+        />
+      </div>
+
+      <Input
+        label="Description Notes (optional)"
+        placeholder="Delivery instructions, etc."
+        {...register("notes")}
+      />
+    </div>
+  );
+};
+
+// ─── Payment Methods (step 3) – clean flat design ────────────────────────────
+const PaymentMethods = ({ selected, onChange }) => {
+  const methods = [
+    {
+      id: "card",
+      name: "Credit / Debit Card",
+      desc: "Pay with Visa, Mastercard, Amex",
+    },
+    { id: "paypal", name: "PayPal", desc: "Pay with your PayPal account" },
+    {
+      id: "bank",
+      name: "Bank Transfer",
+      desc: "Direct transfer from your bank",
+    },
+    {
+      id: "cod",
+      name: "Cash on Delivery",
+      desc: "Pay when you receive the order",
+    },
+  ];
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-lg p-6 mb-6">
+      <SectionHeader title="Payment Method" />
+
+      <div className="space-y-2">
+        {methods.map((method) => (
+          <label
+            key={method.id}
+            className={`flex items-start gap-4 p-4 rounded-lg cursor-pointer transition ${
+              selected === method.id ? "bg-gray-50" : "hover:bg-gray-50/50"
+            }`}>
+            <input
+              type="radio"
+              name="payment"
+              value={method.id}
+              checked={selected === method.id}
+              onChange={(e) => onChange(e.target.value)}
+              className="mt-1 w-4 h-4 text-blue-600 accent-blue-600"
+            />
+            <div>
+              <div className="font-medium text-gray-600">{method.name}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{method.desc}</div>
+            </div>
+          </label>
+        ))}
       </div>
     </div>
   );
 };
 
-// --- Coupon Section (used inside OrderSummary) ---
-const CouponSection = ({ onApplyCoupon }) => {
-  const [code, setCode] = useState('');
-
-  const handleApply = () => {
-    if (code.trim()) {
-      onApplyCoupon(code);
-      setCode('');
-    }
-  };
+// ─── Delivery Options (step 4) – clean flat design ───────────────────────────
+const DeliveryOptions = ({ selected, onChange }) => {
+  const options = [
+    {
+      id: "standard",
+      name: "Standard Delivery",
+      desc: "5–7 business days",
+      price: 0,
+    },
+    {
+      id: "express",
+      name: "Express Delivery",
+      desc: "2–3 business days",
+      price: 9.99,
+    },
+    {
+      id: "sameDay",
+      name: "Same‑Day Delivery",
+      desc: "Order before 12 PM",
+      price: 19.99,
+    },
+    { id: "pickup", name: "Store Pickup", desc: "Ready in 2 hours", price: 0 },
+  ];
 
   return (
-    <div className="mt-6 pt-6 border-t border-gray-200">
-      <label className="block text-sm font-medium text-gray-700 mb-2">Have a coupon?</label>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Enter coupon code"
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="bg-white border border-gray-100 rounded-lg p-6 mb-6">
+      <SectionHeader title="Delivery Method" />
+
+      <div className="space-y-2">
+        {options.map((opt) => (
+          <label
+            key={opt.id}
+            className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition ${
+              selected === opt.id ? "bg-gray-50" : "hover:bg-gray-50/50"
+            }`}>
+            <div className="flex items-start gap-4">
+              <input
+                type="radio"
+                name="delivery"
+                value={opt.id}
+                checked={selected === opt.id}
+                onChange={(e) => onChange(e.target.value)}
+                className="mt-1 w-4 h-4 text-blue-600 accent-blue-600"
+              />
+              <div>
+                <div className="font-medium text-gray-600">{opt.name}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{opt.desc}</div>
+              </div>
+            </div>
+            <span
+              className={`font-bold ${opt.price === 0 ? "text-green-600" : "text-gray-600"}`}>
+              {opt.price === 0 ? "Free" : formatPrice(opt.price)}
+            </span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Order Summary (sticky sidebar) – improved styles ────────────────────────
+const OrderSummary = ({
+  product,
+  subtotal,
+  shippingCost,
+  total,
+  termsAccepted,
+  onTermsChange,
+}) => (
+  <div className="bg-white border border-gray-100 rounded-lg p-6 sticky top-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+        <ShoppingBagIcon className="w-5 h-5 text-white" />
+      </div>
+      <h2 className="text-xl font-medium text-gray-700">Order Summary</h2>
+    </div>
+
+    {/* Product line */}
+    <div className="flex gap-3 mb-5 pb-5 border-b border-gray-100">
+      <div className="w-14 h-14 bg-gray-100 rounded flex items-center justify-center shrink-0 relative">
+        <img
+          src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=64&h=64&fit=crop&q=80"
+          alt={product.name}
+          className="w-full h-full object-cover rounded"
         />
-        <button
-          onClick={handleApply}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-md transition flex items-center gap-2"
-        >
-          <Tag size={16} />
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+          {product.quantity}
+        </span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-gray-600 leading-tight">
+          {product.name}
+        </div>
+        <div className="text-xs text-gray-400 mt-1">{product.variant}</div>
+      </div>
+      <div className="text-sm font-bold text-blue-600 whitespace-nowrap">
+        {formatPrice(product.price)}
+      </div>
+    </div>
+
+    {/* Coupon */}
+    <div className="mb-5">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Enter coupon code"
+            className="w-full border border-gray-200 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+          />
+        </div>
+        <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
           Apply
         </button>
       </div>
     </div>
-  );
-};
 
-// --- Left Side: CheckoutForm Component ---
-export const CheckoutForm = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted');
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-        <div className="space-y-3">
-          <input
-            type="email"
-            placeholder="Email address"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="tel"
-            placeholder="Phone number"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+    {/* Totals */}
+    <div className="space-y-2 border-t border-gray-100 pt-3">
+      <div className="flex justify-between text-sm text-gray-600">
+        <span>Subtotal</span>
+        <span>{formatPrice(subtotal)}</span>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h3>
-        <div className="space-y-3">
-          <input
-            type="text"
-            placeholder="Full name"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="text"
-            placeholder="Address"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="text"
-              placeholder="City"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              placeholder="Postal code"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <select className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option>Country</option>
-            <option>United States</option>
-            <option>Canada</option>
-          </select>
-        </div>
+      <div className="flex justify-between text-sm text-gray-600">
+        <span>Shipping</span>
+        <span>{shippingCost === 0 ? "Free" : formatPrice(shippingCost)}</span>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
-        <div className="space-y-3">
-          <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
-            <input type="radio" name="payment" className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-gray-700">Credit Card</span>
-          </label>
-          <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
-            <input type="radio" name="payment" className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-gray-700">PayPal</span>
-          </label>
-        </div>
-      </div>
-    </form>
-  );
-};
-
-// --- Right Side: OrderSummary Component ---
-export const OrderSummary = ({ products, updateQuantity, removeProduct }) => {
-  // Placeholder coupon handler
-  const handleApplyCoupon = (code) => {
-    alert(`Coupon "${code}" applied (demo)`);
-  };
-
-  const subtotal = products.reduce((acc, p) => acc + p.unitPrice * p.quantity, 0);
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
-
-  return (
-    <div className="bg-gray-50 p-6 border border-gray-200 rounded-lg sticky top-4">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-          <Package className="w-5 h-5 text-white" />
-        </div>
-        <h2 className="text-xl font-semibold text-gray-900">Order Summary</h2>
-      </div>
-
-      {/* Product Cards */}
-      <div className="space-y-2 max-h-96 overflow-y-auto pr-2 -mr-2">
-        {products.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <ShoppingCartIcon className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-            <p>Your cart is empty</p>
-          </div>
-        ) : (
-          products.map((product) => (
-            <OrderProductCard
-              key={product.id}
-              product={product}
-              updateQuantity={updateQuantity}
-              removeProduct={removeProduct}
-            />
-          ))
-        )}
-      </div>
-
-      <CouponSection onApplyCoupon={handleApplyCoupon} />
-
-      {/* Totals */}
-      <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Shipping</span>
-          <span className="font-medium text-gray-900">Free</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Tax (10%)</span>
-          <span className="font-medium text-gray-900">${tax.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-base font-semibold pt-3 border-t border-gray-200">
-          <span className="text-gray-900">Total</span>
-          <span className="text-xl font-bold text-blue-600">${total.toFixed(2)}</span>
-        </div>
+      <div className="flex justify-between text-base font-bold text-gray-600 border-t border-gray-200 pt-3 mt-1">
+        <span>Total</span>
+        <span className="text-xl text-blue-600">{formatPrice(total)}</span>
       </div>
     </div>
-  );
-};
 
-// --- Parent Component that uses both and includes dummy products ---
+    {/* Terms checkbox */}
+    <div className="mt-4 flex items-center justify-center gap-2">
+      <input
+        type="checkbox"
+        id="terms"
+        checked={termsAccepted}
+        onChange={(e) => onTermsChange(e.target.checked)}
+        className="w-4 h-4 text-blue-600 accent-blue-600 rounded"
+      />
+      <label htmlFor="terms" className="text-xs text-gray-500">
+        I agree to the{" "}
+        <a href="#" className="text-blue-600 hover:underline">
+          Terms & Conditions
+        </a>
+      </label>
+    </div>
+
+    {/* Place Order Button */}
+    <button
+      type="submit"
+      className="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex items-center justify-center gap-2">
+      <Van className="w-5 h-5" /> Place Order
+    </button>
+  </div>
+);
+
+// ─── Main Checkout Component ─────────────────────────────────────────────────
 const Checkout = () => {
-  const [products, setProducts] = useState(dummyProducts);
+  // Product data
+  const [product] = useState({
+    name: "MSI Gaming Core i7 8Th Gen 15.6-inch Gaming Fhd Thin an...",
+    variant: "Storage: 512GB",
+    price: 760.0,
+    quantity: 1,
+  });
 
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return;
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: newQuantity } : p))
-    );
+  // Form state (react‑hook‑form)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      email: "",
+      address: "",
+      level: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
+      notes: "",
+    },
+  });
+
+  // Other state
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState("standard");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
+  const handlePhoneVerified = (number) => {
+    setPhoneVerified(true);
   };
 
-  const removeProduct = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const onSubmit = (data) => {
+    if (!phoneVerified) {
+      alert("Please verify your phone number first.");
+      return;
+    }
+
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    if (!termsAccepted) {
+      alert("You must agree to the Terms & Conditions.");
+      return;
+    }
+
+    const orderData = {
+      phone: phoneNumber,
+      billing: data,
+      payment: paymentMethod,
+      delivery: deliveryMethod,
+      product,
+    };
+    console.log("Order submitted:", orderData);
+    alert("Order placed! (check console)");
   };
+
+  const getShippingCost = () => {
+    switch (deliveryMethod) {
+      case "express":
+        return 9.99;
+      case "sameDay":
+        return 19.99;
+      default:
+        return 0;
+    }
+  };
+  const shippingCost = getShippingCost();
+  const subtotal = product.price * product.quantity;
+  const total = subtotal + shippingCost;
 
   return (
-    <section className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-white text-gray-500 text-sm min-h-screen">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="w-full lg:w-3/5">
-            <CheckoutForm />
-          </div>
-          <div className="w-full lg:w-2/5">
-            <OrderSummary
-              products={products}
-              updateQuantity={updateQuantity}
-              removeProduct={removeProduct}
+          {/* Left column – forms */}
+          <div className="flex-1 min-w-0">
+            <PhoneVerification
+              onVerified={handlePhoneVerified}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+            />
+            <BillingDetails register={register} errors={errors} />
+            <PaymentMethods
+              selected={paymentMethod}
+              onChange={setPaymentMethod}
+            />
+            <DeliveryOptions
+              selected={deliveryMethod}
+              onChange={setDeliveryMethod}
             />
           </div>
+
+          {/* Right column – order summary */}
+          <aside className="w-full lg:w-96 shrink-0">
+            <OrderSummary
+              product={product}
+              subtotal={subtotal}
+              shippingCost={shippingCost}
+              total={total}
+              termsAccepted={termsAccepted}
+              onTermsChange={setTermsAccepted}
+            />
+          </aside>
         </div>
-      </div>
-    </section>
+      </form>
+    </div>
   );
 };
 

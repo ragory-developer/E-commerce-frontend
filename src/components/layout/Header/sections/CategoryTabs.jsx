@@ -2,8 +2,9 @@
 
 import React from "react";
 import { Menu } from "lucide-react"; // Hamburger icon
+import { Container } from "@/design-system/Container/Container";
 
-const HeroTabs = () => {
+const CategoryTabs = () => {
   return (
     <div
       className={`
@@ -61,4 +62,4 @@ const HeroTabs = () => {
   );
 };
 
-export default HeroTabs;
+export default CategoryTabs;

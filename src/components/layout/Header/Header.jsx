@@ -3,16 +3,23 @@
 import React from "react";
 import HeaderTop from "./sections/HeaderTop";
 import MiddleNavbar from "./sections/MiddleNavbar";
-// TODO: here sticky navbar not working and headertop is overshadowed by MiddleNavbar z-index
+import CategoryTabs from "./sections/CategoryTabs";
+import Container from "./../../../design-system/Container/Container";
+// TODO: here sticky navbar not working and header top is overshadowed by MiddleNavbar z-index
 const Header = () => {
   return (
-    <header className="relative">
+    <header className=" bg-white">
       <div className="">
-
-      <HeaderTop />
+        <HeaderTop />
       </div>
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky  z-40 w-full bg-white ">
         <MiddleNavbar />
+      </div>
+
+      <div className="md:mt-10">
+        <Container>
+          <CategoryTabs />
+        </Container>
       </div>
     </header>
   );
