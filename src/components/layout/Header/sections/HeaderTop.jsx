@@ -1,3 +1,4 @@
+"use client";
 /**
  * HEADER TOP - FIXED VERSION
  * ==========================
