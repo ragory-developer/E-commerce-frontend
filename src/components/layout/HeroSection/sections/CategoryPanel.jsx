@@ -36,7 +36,7 @@ const categoryData = [
     hasMenu: true,
     megaMenu: {
       backgroundImage:
-        "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=800",
+        "https://asia.fleetcart.envaysoft.com/storage/media/yAaq3dHTWLOlac12ioxGgVrZ3xtrIhKnL5r3roIl.png",
       sections: [
         {
           title: "Mobiles",
@@ -375,16 +375,6 @@ const CategoryPanel = () => {
             );
           })}
         </nav>
-
-        {/* Footer */}
-        {/* <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-          <a
-            href="/categories"
-            className="text-xs font-semibold text-gray-600 hover:text-blue-600 flex items-center gap-1.5 transition-colors group">
-            <span>Browse all categories</span>
-            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </a>
-        </div> */}
       </div>
 
       {/* Mega Menu Portal */}

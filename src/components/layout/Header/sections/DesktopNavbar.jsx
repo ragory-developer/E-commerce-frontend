@@ -1,14 +1,4 @@
-/**
- * DESKTOP NAVBAR - FLEXBOX VERSION
- * ================================
- *
- * Changes Made:
- * 1. Grid → Flexbox (simpler for one-row layout)
- * 2. Logo: fixed width (w-44 = 176px)
- * 3. Search: flex-1 (grows to fill)
- * 4. Icons: auto width
- * 5. z-dropdown for tooltips
- */
+
 
 import React from "react";
 import { GitCompare, Heart, Search, ShoppingCart } from "lucide-react";
@@ -18,15 +8,16 @@ const DesktopNavbar = () => {
     <div className="hidden lg:flex items-center gap-4 h-16">
       <div className="flex-shrink-0 w-44">
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">F</span>
+          <div className="w-12 h-12 p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">R</span>
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-              Fleet<span className="text-blue-600">Cart</span>
+              Ragory<span className="text-blue-600">Store</span>
             </h1>
           </div>
         </div>
+        
       </div>
 
       <div className="flex-1 mx-12">

@@ -13,7 +13,7 @@ const Header = () => {
       {/* ① Top bar — shown only on lg+, scrolls away normally */}
       <HeaderTop />
 
-      <div className="sticky top-0 z-40  bg-white ">
+      <div className="sticky top-0 z-10  bg-white ">
         <MiddleNavbar />
       </div>
 

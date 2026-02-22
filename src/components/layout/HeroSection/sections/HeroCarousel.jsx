@@ -25,7 +25,7 @@ const carouselItems = [
 
 export default function HeroCarousel() {
   return (
-    <div className="relative h-full rounded-xl overflow-hidden">
+    <div className="relative h-full rounded-md overflow-hidden">
       <Swiper
         modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={0}
@@ -46,14 +46,12 @@ export default function HeroCarousel() {
           bulletClass: "swiper-pagination-bullet !bg-white/60 !opacity-100",
           bulletActiveClass: "!bg-white !w-6 !rounded-full",
         }}
-        className="h-full w-full"
-      >
+        className="h-full w-full">
         {carouselItems.map((item) => (
           <SwiperSlide key={item.id}>
             <div
               className="w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${item.image})` }}
-            >
+              style={{ backgroundImage: `url(${item.image})` }}>
               <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent">
                 <div className="absolute left-6 md:left-8 bottom-6 md:bottom-8 text-white max-w-md">
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">

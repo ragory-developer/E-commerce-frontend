@@ -1,13 +1,3 @@
-/**
- * FEATURES SECTION - FIXED VERSION
- * ================================
- *
- * Changes Made:
- * 1. Using Container (consistent padding)
- * 2. Fixed alignment with other sections
- * 3. Proper responsive behavior
- */
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 import "swiper/css";

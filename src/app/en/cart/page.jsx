@@ -45,7 +45,7 @@ const initialProducts = [
   },
 ];
 
-// --- CartTabs Component (separated) ---
+// --- CartTabs Component  ---
 const CartTabs = ({ activeTab, onTabChange }) => {
   const tabs = ["My Cart", "Checkout", "Order Complete"];
 
@@ -54,7 +54,7 @@ const CartTabs = ({ activeTab, onTabChange }) => {
       {tabs.map((tab, index) => (
         <button
           key={tab}
-          className={`w-full sm:w-[280px] lg:w-[300px] h-[50px] sm:h-[55px] font-medium rounded-md transition ${
+          className={`w-full sm:w-70 lg:w-75 h-12.5 sm:h-13.75 font-medium rounded-md transition ${
             index === activeTab
               ? "bg-blue-600 text-white shadow-sm hover:bg-blue-700"
               : "bg-gray-100 text-gray-800 hover:bg-gray-200"

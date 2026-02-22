@@ -31,7 +31,7 @@ function MiddleNavbar() {
       <div
         className={`
            w-full transition-all duration-300 ease-in-out
-          ${isScrolled ? "bg-white/95 backdrop-blur-md " : "bg-white shadow-sm"}
+          ${isScrolled ? "bg-white/95 backdrop-blur-md " : "bg-white "}
         `}>
         <Container className="py-5">
           <DesktopNavbar />
