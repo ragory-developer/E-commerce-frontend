@@ -75,8 +75,8 @@ export default function FeatureTabSection({ tabs = [], products = {} }) {
             <Swiper key={activeTab}>
               {products.map((product) => (
                 <SwiperSlide key={product.id}>
-                  <ProductCard product={product} />
-                  <ProductListCard product={product} />
+                  {/* <ProductCard product={product} />
+                  <ProductListCard product={product} /> */}
                 </SwiperSlide>
               ))}
             </Swiper>

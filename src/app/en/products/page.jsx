@@ -165,7 +165,7 @@ const ProductPage = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <aside
-            className="lg:w-64 flex-shrink-0 space-y-8 order-2 lg:order-1"
+            className="lg:w-64 shrink-0 space-y-8 order-2 lg:order-1"
             aria-label="Product filters">
             <div className="bg-white p-4 hidden md:block rounded-lg">
               <h3 className="text-gray-600 font-medium mb-3">Categories</h3>
@@ -283,7 +283,7 @@ const ProductPage = () => {
                   <div
                     className={
                       viewMode === "grid"
-                        ? "grid grid-cols-[repeat(auto-fit,minmax(192px,1fr))] gap-4"
+                        ? "grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4"
                         : "grid grid-cols-1 md:grid-cols-2 gap-4"
                     }>
                     {getPaginatedItems(products).map((product) =>

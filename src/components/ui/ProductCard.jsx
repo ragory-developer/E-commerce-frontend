@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div
-      className="group p-2 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow overflow-hidden flex flex-col cursor-pointer"
+      className="group p-1.5 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow overflow-hidden flex flex-col cursor-pointer"
       data-product-id={id}>
       {/* Image container with aspect ratio */}
       <div className="relative aspect-square bg-gray-100">
@@ -61,7 +61,7 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Wishlist & Compare */}
-        <div className="absolute top-1.5 right-1.5 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="absolute top-1.5 right-1.5 flex flex-col gap-1   transition-opacity duration-200">
           <button
             onClick={() => setInWishlist(!inWishlist)}
             className={`p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-red-500 hover:text-white transition ${
@@ -104,14 +104,14 @@ export default function ProductCard({ product }) {
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-1">
             {hasDiscount ? (
-              <>
-                <span className="text-md font-bold text-blue-600">
-                  {formatCurrency(price)}
-                </span>
-                <span className="text-md text-gray-400 line-through">
+              <span className="flex flex-col">
+                <span className="text-sm text-gray-400 line-through">
                   {formatCurrency(originalPrice || price)}
                 </span>
-              </>
+                <span className="text-md font-bold text-red-600">
+                  {formatCurrency(price)}
+                </span>
+              </span>
             ) : (
               <span className="text-md font-bold text-blue-600">
                 {formatCurrency(price)}
