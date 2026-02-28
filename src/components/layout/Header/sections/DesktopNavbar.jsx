@@ -2,6 +2,7 @@
 
 import React from "react";
 import { GitCompare, Heart, Search, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 
 const DesktopNavbar = () => {
   return (
@@ -12,9 +13,9 @@ const DesktopNavbar = () => {
             <span className="text-white font-bold text-lg">R</span>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            <Link href="/" className="text-2xl font-bold text-gray-900 tracking-tight">
               Ragory<span className="text-blue-600">Store</span>
-            </h1>
+            </Link>
           </div>
         </div>
         

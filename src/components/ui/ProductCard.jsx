@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div
-      className="group p-1.5 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow overflow-hidden flex flex-col cursor-pointer"
+      className="group p-1.5  bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow overflow-hidden  flex flex-col cursor-pointer"
       data-product-id={id}>
       {/* Image container with aspect ratio */}
       <div className="relative aspect-square bg-gray-100">
@@ -61,20 +61,18 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Wishlist & Compare */}
-        <div className="absolute top-1.5 right-1.5 flex flex-col gap-1   transition-opacity duration-200">
+        <div className="absolute top-1.5 right-1.5 flex flex-col gap-1 transition-opacity duration-200">
           <button
             onClick={() => setInWishlist(!inWishlist)}
-            className={`p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-red-500 hover:text-white transition ${
-              inWishlist ? "text-red-500" : "text-gray-600"
-            }`}
+            className={`p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-red-500 hover:text-white transition ${inWishlist ? "text-red-500" : "text-gray-600"
+              }`}
             aria-label="Wishlist">
             <Heart size={18} fill={inWishlist ? "currentColor" : "none"} />
           </button>
           <button
             onClick={() => setInCompare(!inCompare)}
-            className={`p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-blue-500 hover:text-white transition ${
-              inCompare ? "text-blue-500" : "text-gray-600"
-            }`}
+            className={`p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-blue-500 hover:text-white transition ${inCompare ? "text-blue-500" : "text-gray-600"
+              }`}
             aria-label="Compare">
             <GitCompare size={18} />
           </button>
@@ -101,22 +99,22 @@ export default function ProductCard({ product }) {
           <span>0 Review</span>
         </div>
 
+        {/* PRICE SECTION – FIXED TO PREVENT LAYOUT SHIFT */}
         <div className="flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-1">
-            {hasDiscount ? (
-              <span className="flex flex-col">
-                <span className="text-sm text-gray-400 line-through">
-                  {formatCurrency(originalPrice || price)}
-                </span>
-                <span className="text-md font-bold text-red-600">
-                  {formatCurrency(price)}
-                </span>
-              </span>
-            ) : (
-              <span className="text-md font-bold text-blue-600">
-                {formatCurrency(price)}
-              </span>
-            )}
+          {/* Always two lines: original (or invisible placeholder) + current price */}
+          <div className="flex flex-col">
+            {/* Top line: visible + line-through only when discounted; otherwise invisible */}
+            <span
+              className={`text-sm text-gray-400 ${hasDiscount ? "line-through" : "invisible"
+                }`}>
+              {formatCurrency(originalPrice || price)}
+            </span>
+            {/* Bottom line: current price, color depends on discount */}
+            <span
+              className={`text-md font-bold ${hasDiscount ? "text-red-600" : "text-blue-600"
+                }`}>
+              {formatCurrency(price)}
+            </span>
           </div>
 
           <button
