@@ -1,174 +1,236 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   ChevronRight,
-  Smartphone,
-  Tv,
-  Watch,
-  Shirt,
-  Backpack,
-  Tablet,
-  Headphones,
+  Droplet,
+  Sparkles,
+  Scissors,
   Flame,
+  Wind,
+  Bath,
+  Heart,
+  Gem,
   ShoppingBag,
   LayoutGrid,
 } from "lucide-react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 
-// Icon mapping
+// Icon mapping for beauty categories
 const iconMap = {
-  1: Smartphone,
-  2: Tv,
-  3: Watch,
-  4: Shirt,
-  5: Backpack,
-  6: Tablet,
-  7: Headphones,
-  8: Flame,
-  9: ShoppingBag,
-  10: LayoutGrid,
+  1: Droplet,       // Skincare
+  2: Sparkles,      // Makeup
+  3: Scissors,      // Hair Care
+  4: Flame,         // Fragrance
+  5: Wind,          // Bath & Body
+  6: Bath,          // Tools & Accessories
+  7: Heart,         // Natural & Organic
+  8: Gem,           // Luxury Beauty
+  9: ShoppingBag,   // Gift Sets
+  10: LayoutGrid,   // All Categories
 };
 
-// Sample category data
+// Beauty category data
 const categoryData = [
   {
     id: 1,
-    title: "Consumer Electronics",
+    title: "Skincare",
     hasMenu: true,
     megaMenu: {
       backgroundImage:
-        "https://asia.fleetcart.envaysoft.com/storage/media/yAaq3dHTWLOlac12ioxGgVrZ3xtrIhKnL5r3roIl.png",
+        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800",
       sections: [
         {
-          title: "Mobiles",
-          items: [
-            "Smartphones",
-            "Android",
-            "iPhone",
-            "Featured",
-            "Refurbished",
-            "Brands",
-          ],
+          title: "Face Care",
+          items: ["Cleansers", "Toners", "Moisturizers", "Serums", "Face Masks", "Exfoliators"],
         },
         {
-          title: "Mobile Accessories",
-          items: [
-            "Cases & Covers",
-            "Cables",
-            "Chargers",
-            "Power Bank",
-            "Headphones",
-            "Screen Protectors",
-          ],
+          title: "Eye Care",
+          items: ["Eye Creams", "Eye Serums", "Eye Masks"],
         },
         {
-          title: "Laptops",
-          items: ["Macbook", "Gaming", "Ultraslim", "Tablets", "All Laptops"],
+          title: "Lip Care",
+          items: ["Lip Balms", "Lip Scrubs", "Lip Treatments"],
         },
         {
-          title: "Computer Accessories",
-          items: ["Monitors", "Keyboard & Mouse", "Pendrive", "Speaker"],
+          title: "Sun Care",
+          items: ["Sunscreens", "After Sun", "Tanning"],
         },
         {
-          title: "Hot Brands",
-          items: ["OnePlus", "Apple", "Samsung", "Huawei", "Sony"],
+          title: "Acne & Blemish",
+          items: ["Spot Treatments", "Cleansers", "Moisturizers"],
         },
         {
-          title: "Bluetooth",
-          items: ["Speakers", "Earbuds", "Headsets"],
+          title: "Anti-Aging",
+          items: ["Retinols", "Peptides", "Anti-Wrinkle Creams"],
         },
       ],
     },
   },
   {
     id: 2,
-    title: "Televisions",
-    hasMenu: false,
-    href: "/tvs",
-  },
-  {
-    id: 3,
-    title: "Watches",
-    hasMenu: false,
-    href: "/watches",
-  },
-  {
-    id: 4,
-    title: "Fashion",
+    title: "Makeup",
     hasMenu: true,
     megaMenu: {
       backgroundImage:
-        "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=800",
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800",
       sections: [
         {
-          title: "Men's Wear",
-          items: [
-            "Shirts",
-            "T-Shirts",
-            "Jeans",
-            "Formal Wear",
-            "Ethnic Wear",
-            "Accessories",
-          ],
+          title: "Face",
+          items: ["Foundation", "Concealer", "Powder", "Blush", "Highlighter", "Bronzer"],
         },
         {
-          title: "Women's Wear",
-          items: [
-            "Dresses",
-            "Tops",
-            "Sarees",
-            "Ethnic Wear",
-            "Western Wear",
-            "Accessories",
-          ],
+          title: "Eyes",
+          items: ["Eyeshadow", "Eyeliner", "Mascara", "Eyebrows", "Primer"],
         },
         {
-          title: "Kids",
-          items: ["Boys Clothing", "Girls Clothing", "Infants", "Toys"],
+          title: "Lips",
+          items: ["Lipstick", "Lip Gloss", "Lip Liner", "Lip Stain"],
+        },
+        {
+          title: "Nails",
+          items: ["Nail Polish", "Base & Top Coat", "Nail Care"],
+        },
+        {
+          title: "Makeup Tools",
+          items: ["Brushes", "Sponges", "Sharpeners", "Mirrors"],
+        },
+        {
+          title: "Makeup Removers",
+          items: ["Micellar Water", "Cleansing Oils", "Wipes"],
+        },
+      ],
+    },
+  },
+  {
+    id: 3,
+    title: "Hair Care",
+    hasMenu: true,
+    megaMenu: {
+      backgroundImage:
+        "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800",
+      sections: [
+        {
+          title: "Shampoos",
+          items: ["For Dry Hair", "For Oily Hair", "Color Protection", "Volumizing", "Sulfate-Free"],
+        },
+        {
+          title: "Conditioners",
+          items: ["Daily Conditioners", "Deep Conditioners", "Leave-In", "Hair Masks"],
+        },
+        {
+          title: "Styling",
+          items: ["Hair Sprays", "Gels & Mousses", "Creams & Lotions", "Heat Protectants"],
+        },
+        {
+          title: "Hair Treatments",
+          items: ["Oils & Serums", "Scalp Treatments", "Hair Growth"],
+        },
+        {
+          title: "Hair Color",
+          items: ["Permanent Color", "Semi-Permanent", "Root Touch-Up"],
+        },
+        {
+          title: "Tools",
+          items: ["Hair Dryers", "Straighteners", "Curling Irons", "Brushes & Combs"],
+        },
+      ],
+    },
+  },
+  {
+    id: 4,
+    title: "Fragrance",
+    hasMenu: true,
+    megaMenu: {
+      backgroundImage:
+        "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800",
+      sections: [
+        {
+          title: "Women",
+          items: ["Perfumes", "Eau de Parfum", "Eau de Toilette", "Gift Sets"],
+        },
+        {
+          title: "Men",
+          items: ["Colognes", "Eau de Parfum", "Eau de Toilette", "Gift Sets"],
+        },
+        {
+          title: "Unisex",
+          items: ["Niche Fragrances", "Unisex Scents"],
+        },
+        {
+          title: "Discovery Sets",
+          items: ["Sample Sets", "Miniatures"],
+        },
+        {
+          title: "Home Fragrance",
+          items: ["Candles", "Diffusers", "Room Sprays"],
         },
       ],
     },
   },
   {
     id: 5,
-    title: "Backpacks",
-    hasMenu: false,
-    href: "/backpacks",
+    title: "Bath & Body",
+    hasMenu: true,
+    megaMenu: {
+      backgroundImage:
+        "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=800",
+      sections: [
+        {
+          title: "Bath",
+          items: ["Bath Bombs", "Bath Salts", "Bubble Bath", "Bath Oils"],
+        },
+        {
+          title: "Shower",
+          items: ["Shower Gels", "Body Scrubs", "Soap Bars", "Shower Creams"],
+        },
+        {
+          title: "Body Care",
+          items: ["Body Lotions", "Body Butters", "Body Oils", "Hand Creams"],
+        },
+        {
+          title: "Deodorants",
+          items: ["Sprays", "Roll-Ons", "Natural Deodorants"],
+        },
+        {
+          title: "Self-Tanning",
+          items: ["Tanners", "Tan Removers", "Tan Accessories"],
+        },
+      ],
+    },
   },
   {
     id: 6,
-    title: "Tablets",
+    title: "Tools & Accessories",
     hasMenu: false,
-    href: "/tablets",
+    href: "/beauty/tools",
   },
   {
     id: 7,
-    title: "Headphones",
+    title: "Natural & Organic",
     hasMenu: false,
-    href: "/headphones",
+    href: "/beauty/natural",
   },
   {
     id: 8,
-    title: "Hot Sale",
+    title: "Luxury Beauty",
     hasMenu: false,
-    href: "/hot-sale",
+    href: "/beauty/luxury",
   },
   {
     id: 9,
-    title: "Shoes",
+    title: "Gift Sets",
     hasMenu: false,
-    href: "/shoes",
+    href: "/beauty/gifts",
   },
   {
     id: 10,
     title: "All Categories",
     hasMenu: false,
-    href: "/all",
+    href: "/beauty/all",
   },
 ];
 
-// dynamic mega menu on scroll
-
-// Mega Menu Component
+// Mega Menu Component (unchanged)
 const MegaMenu = ({
   category,
   position,
@@ -182,7 +244,7 @@ const MegaMenu = ({
 
   return createPortal(
     <div
-      className="absolute bg-white  border border-gray-200 overflow-hidden transition-all duration-200"
+      className="absolute bg-white border border-gray-200 overflow-hidden transition-all duration-200"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
@@ -205,12 +267,10 @@ const MegaMenu = ({
       />
 
       {/* Mega Menu Header */}
-      <div className="relative  px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+      <div className="relative px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
         <div className="flex items-center gap-3">
           {Icon && <Icon className="w-5 h-5 text-blue-600" />}
-          <h3 className="text-base font-bold text-gray-500">
-            {category.title}
-          </h3>
+          <h3 className="text-base font-bold text-gray-500">{category.title}</h3>
         </div>
       </div>
 
@@ -221,18 +281,18 @@ const MegaMenu = ({
         <div className="grid grid-cols-3 gap-x-8 gap-y-6">
           {category.megaMenu.sections.map((section, idx) => (
             <div key={idx} className="space-y-3">
-              <h4 className="font-bold text-gray-600 text-sm uppercase tracking-wide pb-2 ">
+              <h4 className="font-bold text-gray-600 text-sm uppercase tracking-wide pb-2">
                 {section.title}
               </h4>
               <ul className="space-y-2.5">
                 {section.items.map((item, itemIdx) => (
                   <li key={itemIdx}>
-                    <a
-                      href="#"
+                    <Link
+                      href="/en/product"
                       className="text-sm text-gray-600 hover:text-blue-600 hover:pl-2 inline-block transition-all duration-200 relative group">
                       <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0 h-0.5 bg-blue-600 group-hover:w-1.5 transition-all duration-200"></span>
                       {item}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -255,6 +315,7 @@ const MegaMenu = ({
   );
 };
 
+// CategoryPanel component (unchanged logic)
 const CategoryPanel = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [menuPosition, setMenuPosition] = useState({
@@ -322,28 +383,26 @@ const CategoryPanel = () => {
 
   return (
     <>
-      <div className="relative py-4 bg-white rounded-lg  border border-gray-200 h-full overflow-hidden flex flex-col">
+      <div className="relative py-4 bg-white rounded-lg border border-gray-200 h-full overflow-hidden flex flex-col">
         {/* Category List */}
         <nav className="flex-1 overflow-y-auto">
-          {categoryData.map((category, index) => {
+          {categoryData.map((category) => {
             const Icon = iconMap[category.id];
             return (
               <div
-                className=""
                 key={category.id}
                 ref={(el) => (categoryRefs.current[category.id] = el)}
                 onMouseEnter={() => handleCategoryHover(category)}
                 onMouseLeave={handleCategoryLeave}>
-                <a
-                  href={category.href || "#"}
+                <Link
+                  href={"/en/product"}
                   className={`
                     flex items-center justify-between px-4 py-2.5
                     text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700
                     transition-all duration-200 group relative
-                    ${
-                      hoveredCategory?.id === category.id
-                        ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
-                        : "border-l-4 border-transparent"
+                    ${hoveredCategory?.id === category.id
+                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+                      : "border-l-4 border-transparent"
                     }
                   `}>
                   <div className="flex items-center gap-3">
@@ -362,15 +421,14 @@ const CategoryPanel = () => {
                     <ChevronRight
                       className={`
                         w-4 h-4 transition-all duration-200
-                        ${
-                          hoveredCategory?.id === category.id
-                            ? "text-blue-600 translate-x-1"
-                            : "text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1"
+                        ${hoveredCategory?.id === category.id
+                          ? "text-blue-600 translate-x-1"
+                          : "text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1"
                         }
                       `}
                     />
                   )}
-                </a>
+                </Link>
               </div>
             );
           })}

@@ -9,7 +9,7 @@ const formatCurrency = (value) =>
     minimumFractionDigits: 2,
   }).format(value);
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, onClick }) {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCompare, setInCompare] = useState(false);
 
@@ -30,6 +30,7 @@ export default function ProductCard({ product }) {
   return (
     <div
       className="group p-1.5  bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow overflow-hidden  flex flex-col cursor-pointer"
+      onClick={onClick}
       data-product-id={id}>
       {/* Image container with aspect ratio */}
       <div className="relative aspect-square bg-gray-100">

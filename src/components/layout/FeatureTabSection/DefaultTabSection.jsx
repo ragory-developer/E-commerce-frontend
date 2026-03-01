@@ -2,11 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Grid, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/grid";
+import { Navigation, Grid, Autoplay } from "swiper/modules";
+import { useRouter } from "next/navigation";
 import ProductCard from "@/components/ui/ProductCard";
 import Container from "../../../design-system/Container/Container";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -47,6 +44,7 @@ export default function DefaultTabSection({
   tabAlignment = "left",
   heading,
   rowCount = 1,
+  maxInRow = 7,
 }) {
   const tabs = tabTitles ?? buildDefaultTabs(products);
 
@@ -59,6 +57,8 @@ export default function DefaultTabSection({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  // Router for product navigation
+  const router = useRouter();
   // ── Scrollability detection ───────────────────────────────────────────────
   const checkScrollability = useCallback(() => {
     const el = tabsScrollRef.current;
@@ -91,25 +91,55 @@ export default function DefaultTabSection({
 
   const filteredProducts = filterProducts(products, tabs[activeTab]);
 
+
+  function getBreakpoints(maxInRow) {
+    // Guard for very small maxInRow – always show all available
+    if (maxInRow <= 2) {
+      return {
+        400: { slidesPerView: maxInRow },
+        600: { slidesPerView: maxInRow },
+        800: { slidesPerView: maxInRow },
+        1000: { slidesPerView: maxInRow },
+        1200: { slidesPerView: maxInRow },
+        1400: { slidesPerView: maxInRow },
+        1600: { slidesPerView: maxInRow },
+      };
+    }
+
+    // Helper: compute slidesPerView at a given offset from max
+    const compute = (offset) => {
+      // offset = 6,5,4,3,2,1,0
+      const raw = maxInRow - offset;
+      // Clamp between 1 and maxInRow
+      return Math.max(1, Math.min(maxInRow, raw));
+    };
+
+    return {
+      400: { slidesPerView: compute(6) },
+      600: { slidesPerView: compute(5) },
+      800: { slidesPerView: compute(4) },
+      1000: { slidesPerView: compute(3) },
+      1200: { slidesPerView: compute(2) },
+      1400: { slidesPerView: compute(1) },
+      1600: { slidesPerView: compute(0) },
+    };
+  }
+
+// Usage in your Swiper params:
+
   const swiperParams = {
-    modules: [Navigation, Pagination, Grid, Autoplay],
-    slidesPerView: 1,
+    modules: [Navigation, Grid, Autoplay],
+
     grid: { rows: rowCount, fill: "row" },
-    spaceBetween: 16,
+    slidesPerView: 2, // base for screens < 400px
+    spaceBetween: 12,
+    breakpoints: getBreakpoints(maxInRow),
     navigation: {
       prevEl: prevRef.current,
       nextEl: nextRef.current,
     },
-    pagination: { clickable: true, dynamicBullets: true },
-    breakpoints: {
-      400: { slidesPerView: 2 },
-      600: { slidesPerView: 3 },
-      800: { slidesPerView: 4 },
-      1000: { slidesPerView: 5 },
-      1200: { slidesPerView: 6 },
-      1400: { slidesPerView: 6 },
-      1600: { slidesPerView: 7 },
-    },
+    pagination: { clickable: true, dynamicBullets: false },
+  
     onInit: (swiper) => {
       swiper.params.navigation.prevEl = prevRef.current;
       swiper.params.navigation.nextEl = nextRef.current;
@@ -122,7 +152,7 @@ export default function DefaultTabSection({
   const headerRowClass = tabAlignment === "right" ? "flex-row-reverse justify-between" : "flex-row";
 
   return (
-    <section className="bg-white py-8 md:py-12">
+    <section className="bg-white py-8 ">
       <Container>
         {heading && (
           <h2 className="mb-4 text-xl font-bold text-gray-800 md:text-2xl">
@@ -130,7 +160,7 @@ export default function DefaultTabSection({
           </h2>
         )}
 
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl  bg-white overflow-hidden">
 
           {/* ── Header Bar ─────────────────────────────────────────────── */}
           <div className={`flex items-center gap-2 border-b border-gray-100 px-4 bg-gray-50/60 ${headerRowClass}`}>
@@ -240,13 +270,13 @@ export default function DefaultTabSection({
           </div>
 
           {/* ── Product Carousel ─────────────────────────────────────────── */}
-          <div className="px-4 pt-4 pb-8">
+          <div className="pt-4 pb-8">
             {filteredProducts.length > 0 ? (
               <Swiper key={activeTab} {...swiperParams}>
                 {filteredProducts.map((product) => (
                   <SwiperSlide key={product.id}>
                     <div className="pb-1">
-                      <ProductCard product={product} className="h-full w-full" />
+                      <ProductCard onClick={() => router.push(`/en/product/${product.id}`)} product={product} className="h-full w-full" />
                     </div>
                   </SwiperSlide>
                 ))}

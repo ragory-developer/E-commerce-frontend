@@ -8,7 +8,7 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-export default function ProductListCard({ product }) {
+export default function ProductListCard({ product, onClick }) {
   const {
     id,
     image,
@@ -26,7 +26,8 @@ export default function ProductListCard({ product }) {
   return (
     <div
       className="group w-full  h-26 bg-white  rounded-lg hover:shadow-sm transition-shadow overflow-hidden flex flex-row items-center gap-2 pl-2 cursor-pointer"
-      data-product-id={id}>
+      data-product-id={id}
+      onClick={onClick}>
       {/* Image with border and badges overlay */}
       <div className="relative h-full aspect-square shrink-0 p-0.5  overflow-hidden ">
         {image ? (

@@ -21,11 +21,11 @@ const Header = () => {
         ③ Category tabs — NOT sticky, scrolls away with the page.
            Only visible on md+ screens.
       */}
-      <div className="hidden md:block border-b mt-8 border-gray-100">
+      {/* <div className="hidden md:block border-b mt-8 border-gray-100">
         <Container>
           <CategoryTabs />
         </Container>
-      </div>
+      </div> */}
     </header>
   );
 };
